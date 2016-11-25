@@ -1,5 +1,9 @@
 package classifier;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +12,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import extractor.Extractable;
 import extractor.Image;
@@ -55,7 +61,7 @@ public class Knn<T> {
 		this.finalResults = new ArrayList<Result>();
 	}
 
-	public void calculateEuclideanDistances(int objectIndex, int numberOfNeighbours){
+	public void calculateEuclideanDistances(int objectIndex, int numberOfNeighbours) {
 		ArrayList<DistanceMetric> tmpEuclid = new ArrayList<>();
 		double eDistance = 0.0;
 		for (int j = 0; j < trainData.size(); j++) {
@@ -64,66 +70,75 @@ public class Knn<T> {
 							+ Math.pow(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2(), 2.0)
 							+ Math.pow(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3(), 2.0)
 							+ Math.pow(testData.get(objectIndex).getFeature4() - trainData.get(j).getFeature4(), 2.0)
-							+ Math.pow(testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5(), 2.0)
-							,0.5);
+							+ Math.pow(testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5(), 2.0),
+					0.5);
 			tmpEuclid.add(new DistanceMetric(eDistance, trainData.get(j).getImageId()));
 		}
 
 		findNNearestNeighbours(numberOfNeighbours, tmpEuclid);
 		findDominantClass(objectIndex);
-
 	}
 
 	public void calculateMinkovskyDistances(int objectIndex, int numberOfNeighbours) {
 		ArrayList<DistanceMetric> tmpMinkovsky = new ArrayList<>();
 		double mDistance = 0.0;
 		for (int j = 0; j < trainData.size(); j++) {
-			mDistance = Math.pow(Math.pow(Math.abs(testData.get(objectIndex).getFeature1() - trainData.get(j).getFeature1()), 3.0)
-					+ Math.pow(Math.abs(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2()), 3.0)
-					+ Math.pow(Math.abs(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3()), 3.0)
-					+ Math.pow(Math.abs(testData.get(objectIndex).getFeature4()- trainData.get(j).getFeature4()), 3.0)
-					+ Math.pow(Math.abs(testData.get(objectIndex).getFeature5()- trainData.get(j).getFeature5()), 3.0)
-					,0.3333);
+			mDistance = Math.pow(
+					Math.pow(Math.abs(testData.get(objectIndex).getFeature1() - trainData.get(j).getFeature1()), 3.0)
+							+ Math.pow(
+									Math.abs(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2()),
+									3.0)
+							+ Math.pow(
+									Math.abs(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3()),
+									3.0)
+							+ Math.pow(
+									Math.abs(testData.get(objectIndex).getFeature4() - trainData.get(j).getFeature4()),
+									3.0)
+							+ Math.pow(
+									Math.abs(testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5()),
+									3.0),
+					0.3333);
 			tmpMinkovsky.add(new DistanceMetric(mDistance, trainData.get(j).getImageId()));
 		}
 
 		findNNearestNeighbours(numberOfNeighbours, tmpMinkovsky);
 		findDominantClass(objectIndex);
-				
+
 	}
 
 	public void calculateChebyshevDistances(int objectIndex, int numberOfNeighbours) {
 		ArrayList<DistanceMetric> tmpChebyshev = new ArrayList<>();
 		double cDistance = 0.0;
 		for (int j = 0; j < trainData.size(); j++) {
-			
+
 			cDistance = Math.abs(Math.max(
 					testData.get(objectIndex).getFeature1() - trainData.get(objectIndex).getFeature1(),
-					Math.max(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2(), 
-					Math.max(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3(), 
-					Math.max(testData.get(objectIndex).getFeature4() - trainData.get(j).getFeature4(),testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5())))));
-						tmpChebyshev.add(new DistanceMetric(cDistance, trainData.get(j).getImageId()));
+					Math.max(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2(),
+							Math.max(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3(), Math.max(
+									testData.get(objectIndex).getFeature4() - trainData.get(j).getFeature4(),
+									testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5())))));
+			tmpChebyshev.add(new DistanceMetric(cDistance, trainData.get(j).getImageId()));
 		}
 
 		findNNearestNeighbours(numberOfNeighbours, tmpChebyshev);
 		findDominantClass(objectIndex);
 
-}
+	}
 
 	public void calculateTaxiDistances(int objectIndex, int numberOfNeighbours) {
 
 		ArrayList<DistanceMetric> tmpTaxi = new ArrayList<>();
 		double tDistance = 0.0;
-			for (int j = 0; j < trainData.size(); j++) {
-				tDistance = Math.abs(testData.get(objectIndex).getFeature1() - trainData.get(j).getFeature1())
-						+ Math.abs(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2())
-						+ Math.abs(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3())
-						+ Math.abs(testData.get(objectIndex).getFeature4() - trainData.get(j).getFeature4())
-						+ Math.abs(testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5());
-				tmpTaxi.add(new DistanceMetric(tDistance, trainData.get(j).getImageId()));
-			}
-			findNNearestNeighbours(numberOfNeighbours, tmpTaxi);
-			findDominantClass(objectIndex);
+		for (int j = 0; j < trainData.size(); j++) {
+			tDistance = Math.abs(testData.get(objectIndex).getFeature1() - trainData.get(j).getFeature1())
+					+ Math.abs(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2())
+					+ Math.abs(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3())
+					+ Math.abs(testData.get(objectIndex).getFeature4() - trainData.get(j).getFeature4())
+					+ Math.abs(testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5());
+			tmpTaxi.add(new DistanceMetric(tDistance, trainData.get(j).getImageId()));
+		}
+		findNNearestNeighbours(numberOfNeighbours, tmpTaxi);
+		findDominantClass(objectIndex);
 	}
 
 	private void findNNearestNeighbours(int numberOfNeighbours, ArrayList<DistanceMetric> list) {
@@ -176,8 +191,8 @@ public class Knn<T> {
 			}
 			// System.out.println("one majority class, index is: "+index);
 			System.out.println("Dominant label is " + uniqueValues[index] + " with " + max + " occurences");
-			System.out.println("original label: "+testData.get(objectIndex).getImageId());
-			finalResults.add(new Result(testData.get(objectIndex).getImageId(),Integer.parseInt(uniqueValues[index])));
+			System.out.println("original label: " + testData.get(objectIndex).getImageId());
+			finalResults.add(new Result(testData.get(objectIndex).getImageId(), Integer.parseInt(uniqueValues[index])));
 		} else {// we have multiple modes
 			int[] ix = new int[freq];// array of indices of modes
 			System.out.println("There are: " + freq + " classes with same distance");
@@ -200,60 +215,79 @@ public class Knn<T> {
 			int nIndex = ix[rIndex];
 			// return unique value at that index
 			System.out.println("Picked label: " + uniqueValues[nIndex]);
-			System.out.println("original label: "+testData.get(objectIndex).getImageId());
-			finalResults.add(new Result(testData.get(objectIndex).getImageId(),Integer.parseInt(uniqueValues[nIndex])));
+			System.out.println("original label: " + testData.get(objectIndex).getImageId());
+			finalResults
+					.add(new Result(testData.get(objectIndex).getImageId(), Integer.parseInt(uniqueValues[nIndex])));
 		}
 	}
 
 	public void showConfusionMatrix() {
 		confusionMatrix = new int[11][11];
-		
+
 		System.out.println("\n ");
-		
-		for(Result r:finalResults){
+
+		for (Result r : finalResults) {
 			Integer.toString(confusionMatrix[r.getOriginalLabel()][r.getClassifiedLabel()]++);
 		}
-		
+
 		System.out.print("\t");
-		for(int i=0;i<10;i++){
-			System.out.print(Integer.toString(i)+"\t");
+		for (int i = 0; i < 10; i++) {
+			System.out.print(Integer.toString(i) + "\t");
 		}
 		System.out.print("Sum");
 		System.out.println(" ");
-		
-		for(int i=0;i<10;i++){
-			for(int j=0;j<10;j++){
-				if(i!=j){
-					confusionMatrix[i][10]+=confusionMatrix[i][j];
+
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (i != j) {
+					confusionMatrix[i][10] += confusionMatrix[i][j];
 				}
 			}
 		}
-		
-		for(int i=0;i<10;i++){
-			for(int j=0;j<10;j++){
-				if(i!=j){
-					confusionMatrix[10][j]+=confusionMatrix[i][j];
+
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (i != j) {
+					confusionMatrix[10][j] += confusionMatrix[i][j];
 				}
 			}
 		}
-		for(int i=0;i<10;i++){
-			System.out.print(i+"\t");
-			for(int j=0;j<11;j++){
-				System.out.print(Integer.toString(confusionMatrix[i][j])+"\t");
+		for (int i = 0; i < 10; i++) {
+			System.out.print(i + "\t");
+			for (int j = 0; j < 11; j++) {
+				System.out.print(Integer.toString(confusionMatrix[i][j]) + "\t");
 			}
 			System.out.println(" ");
 		}
 		System.out.print("Sum\t");
-		for(int i=0;i<10;i++){
-			System.out.print(Integer.toString(confusionMatrix[10][i])+"\t");
+		for (int i = 0; i < 10; i++) {
+			System.out.print(Integer.toString(confusionMatrix[10][i]) + "\t");
 		}
-		double efficiency=0.0;
-			for(int j=0;j<10;j++){
-				efficiency+=confusionMatrix[j][j];
-			}
-			System.out.println("\n\n ");
-			DecimalFormat formatter = new DecimalFormat("#0.000");
-		System.out.println("Efficiency: "+formatter.format((efficiency/testData.size()*100))+" %");
-        
+		double efficiency = 0.0;
+		for (int j = 0; j < 10; j++) {
+			efficiency += confusionMatrix[j][j];
+		}
+		System.out.println("\n\n ");
+		DecimalFormat formatter = new DecimalFormat("#0.000");
+		System.out.println("Efficiency: " + formatter.format((efficiency / testData.size() * 100)) + " %");
+       
+	}
+
+	public void saveImage(String name) {
+		int[] tmp = new int[512 * 512];
+		for (int i = 0; i < 512 * 512; i++) {
+			tmp[i] = finalResults.get(i).classifiedLabel;
+		}
+
+		BufferedImage img = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
+		img.setRGB(0, 0,512,512,tmp,0,512);
+		File outputfile = new File(name);
+		try {
+			ImageIO.write(img, "jpg", outputfile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

@@ -1,6 +1,7 @@
 package extractor;
 
 import java.io.Serializable;
+import java.util.Random;
 
 import javax.swing.JTree;
 
@@ -22,7 +23,8 @@ public class TextureImage extends Image implements Serializable,Extractable{
     		tmp[i]=getImageTable()[i];
     	}
     	double[] result = calculateFFT(tmp);
-    	return 0.0;
+    	Random rand = new Random();
+    	return rand.nextDouble();
 	}
     @Override
 	public double calculateSecondFeature(){
@@ -31,14 +33,17 @@ public class TextureImage extends Image implements Serializable,Extractable{
     		tmp[i]=getImageTable()[i];
     	}
     	double [] histogram = calculateHistogram(tmp);
-     return 0.0;
+    	Random rand = new Random();
+    	return rand.nextDouble();
 	}
     @Override
 	public double calculateThirdFeature(){
-     return 0.0;
+    	Random rand = new Random();
+    	return rand.nextDouble();
 	}
     public double calculateFourthFeature(){
-     return 0.0;
+    	Random rand = new Random();
+    	return rand.nextDouble();
     }
 	@Override
 	public double getFeature5() {

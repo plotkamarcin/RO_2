@@ -16,7 +16,7 @@ import javax.swing.JLabel;
 public class FeatureProcessor {
 
 	private ArrayList<Image> images;
-	private ArrayList<TextureImage> starImages;
+	protected ArrayList<TextureImage> starImages;
 	
 
 	public ArrayList<TextureImage> getStarImages() {
@@ -48,7 +48,7 @@ public class FeatureProcessor {
 		int index=0;
 		
 		for(int j=0;j<loader.getImages().size();j++){
-			int[]tmp = new int[64*64];
+			int[]tmp = new int[loader.getImages().get(j).getWidth()*loader.getImages().get(j).getHeight()];
 			byte[] pixels=null;
 			 pixels= ((DataBufferByte) loader.getImages().get(j).getRaster().getDataBuffer()).getData();
 			for(int i=0;i<pixels.length;i++){
@@ -96,5 +96,4 @@ public class FeatureProcessor {
 		frame.pack();
 		frame.setVisible(true);
 	}
-
 }
