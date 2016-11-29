@@ -14,10 +14,14 @@ public class Classifier {
 	ArrayList<Image> trainData;
 
 	public static void main(String[] args) {
-		ArrayList<Extractable> trainData = new Loader().loadData("trainTextures.ser");
+ 		ArrayList<Extractable> trainData = new Loader().loadData("trainTextures.ser");
 		ArrayList<Extractable> testData = new Loader().loadData("testFisrtImage.ser");
 
 
+		NaiveBayesian Bayes = new NaiveBayesian(testData, trainData);
+		Bayes.classifyItems();
+		Bayes.saveImage("testbayes.png");
+		
 		
 		Knn starClassifier = new Knn(testData, trainData);
 		for (int i = 0; i <testData.size(); i++) {

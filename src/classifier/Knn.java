@@ -283,7 +283,7 @@ public class Knn<T> {
 		img.setRGB(0, 0,512,512,tmp,0,512);
 		File outputfile = new File(name);
 		try {
-			ImageIO.write(img, "jpg", outputfile);
+			ImageIO.write(img, "png", outputfile);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
