@@ -35,6 +35,48 @@ public class NaiveBayesian {
 			this.classifiedLabel = c;
 		}
 	}
+	
+	private class ErrorFunction {
+
+
+	    // fractional error in math formula less than 1.2 * 10 ^ -7.
+	    // although subject to catastrophic cancellation when z in very close to 0
+	    // from Chebyshev fitting formula for erf(z) from Numerical Recipes, 6.2
+	    public double erf(double z) {
+	        double t = 1.0 / (1.0 + 0.5 * Math.abs(z));
+
+	        // use Horner's method
+	        double ans = 1 - t * Math.exp( -z*z   -   1.26551223 +
+	                                            t * ( 1.00002368 +
+	                                            t * ( 0.37409196 + 
+	                                            t * ( 0.09678418 + 
+	                                            t * (-0.18628806 + 
+	                                            t * ( 0.27886807 + 
+	                                            t * (-1.13520398 + 
+	                                            t * ( 1.48851587 + 
+	                                            t * (-0.82215223 + 
+	                                            t * ( 0.17087277))))))))));
+	        if (z >= 0) return  ans;
+	        else        return -ans;
+	    }
+
+	    // fractional error less than x.xx * 10 ^ -4.
+	    // Algorithm 26.2.17 in Abromowitz and Stegun, Handbook of Mathematical.
+	    public double erf2(double z) {
+	        double t = 1.0 / (1.0 + 0.47047 * Math.abs(z));
+	        double poly = t * (0.3480242 + t * (-0.0958798 + t * (0.7478556)));
+	        double ans = 1.0 - poly * Math.exp(-z*z);
+	        if (z >= 0) return  ans;
+	        else        return -ans;
+	    }
+
+	    // cumulative normal distribution
+	    // See Gaussia.java for a better way to compute Phi(z)
+	    public double Phi(double ro, double mi, double value) {
+	        return 0.5 * (1.0 + erf((value-mi) / (ro*(Math.sqrt(2.0)))));
+
+	    }
+	}
 	private ArrayList<Extractable> testData;
 	private ArrayList<Extractable> trainData;
 	private ArrayList<Result> finalResults;
@@ -63,11 +105,12 @@ public class NaiveBayesian {
 			double posterior4=calculateGaussianProbabilityFunction(varianceValues[3][0], meanValues[3][0], item.getFeature1())*calculateGaussianProbabilityFunction(varianceValues[3][1], meanValues[3][1], item.getFeature2())*calculateGaussianProbabilityFunction(varianceValues[3][2], meanValues[3][2], item.getFeature3())*calculateGaussianProbabilityFunction(varianceValues[3][3], meanValues[3][3], item.getFeature4());	
 			double evidence = posterior1+posterior2+posterior3+posterior4;
 			
+			ErrorFunction erf = new ErrorFunction();
 			 double [] probabilities = new double[4];
-			 probabilities[0]=(probability*posterior1)/evidence;
-			 probabilities[1]=(probability*posterior2)/evidence;
-			 probabilities[2]=(probability*posterior3)/evidence;
-			 probabilities[3]=(probability*posterior4)/evidence;
+			 probabilities[0]=erf.erf((probability*posterior1)/evidence);
+			 probabilities[1]=erf.erf((probability*posterior2)/evidence);
+			 probabilities[2]=erf.erf((probability*posterior3)/evidence);
+			 probabilities[3]=erf.erf((probability*posterior4)/evidence);
 			
 			 int maxIndex = 0;
 			 for (int i = 1; i < probabilities.length; i++){
