@@ -80,8 +80,11 @@ public class FeatureProcessor {
 		}		
 	}
 	public void calculateImageFeatures(){
+		double cnt=0;
 		for(TextureImage i:starImages){
+			cnt++;
 			i.setFeature1(i.calculateFirstFeature());
+			System.out.println("fft "+(100*(cnt/starImages.size())+"%"));
 			i.setFeature2(i.calculateSecondFeature());
 			i.setFeature3(i.calculateThirdFeature());
 			i.setFeature4(i.calculateFourthFeature());

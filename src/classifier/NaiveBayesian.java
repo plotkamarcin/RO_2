@@ -56,7 +56,7 @@ public class NaiveBayesian {
 	public void classifyItems(){ // https://en.wikipedia.org/wiki/Naive_Bayes_classifier with gaussian distribution
 		
 		for(Extractable item:testData){
-					
+			
 			double posterior1=calculateGaussianProbabilityFunction(varianceValues[0][0], meanValues[0][0], item.getFeature1())*calculateGaussianProbabilityFunction(varianceValues[0][1], meanValues[0][1], item.getFeature2())*calculateGaussianProbabilityFunction(varianceValues[0][2], meanValues[0][2], item.getFeature3())*calculateGaussianProbabilityFunction(varianceValues[0][3], meanValues[0][3], item.getFeature4());
 			double posterior2=calculateGaussianProbabilityFunction(varianceValues[1][0], meanValues[1][0], item.getFeature1())*calculateGaussianProbabilityFunction(varianceValues[1][1], meanValues[1][1], item.getFeature2())*calculateGaussianProbabilityFunction(varianceValues[1][2], meanValues[1][2], item.getFeature3())*calculateGaussianProbabilityFunction(varianceValues[1][3], meanValues[1][3], item.getFeature4());
 			double posterior3=calculateGaussianProbabilityFunction(varianceValues[2][0], meanValues[2][0], item.getFeature1())*calculateGaussianProbabilityFunction(varianceValues[2][1], meanValues[2][1], item.getFeature2())*calculateGaussianProbabilityFunction(varianceValues[2][2], meanValues[2][2], item.getFeature3())*calculateGaussianProbabilityFunction(varianceValues[2][3], meanValues[2][3], item.getFeature4());
@@ -131,7 +131,7 @@ public class NaiveBayesian {
         		Mean[2][2]+=list.get(i).getFeature3();
         		Mean[2][3]+=list.get(i).getFeature4();
         		break;
-        	case 195:
+        	case 191:
         		Mean[3][0]+=list.get(i).getFeature1();
         		Mean[3][1]+=list.get(i).getFeature2();
         		Mean[3][2]+=list.get(i).getFeature3();
@@ -168,7 +168,7 @@ public class NaiveBayesian {
        		Variances[2][2]+=Math.pow(list.get(i).getFeature3()-averages[2][2],2);
        		Variances[2][3]+=Math.pow(list.get(i).getFeature4()-averages[2][3],2);
        		break;
-       	case 195:
+       	case 191:
        		Variances[3][0]+=Math.pow(list.get(i).getFeature1()-averages[3][0],2);
        		Variances[3][1]+=Math.pow(list.get(i).getFeature2()-averages[3][1],2);
        		Variances[3][2]+=Math.pow(list.get(i).getFeature3()-averages[3][2],2);
