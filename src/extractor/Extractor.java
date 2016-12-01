@@ -15,7 +15,7 @@ public class Extractor {
 
 	public static void main(String[] args) throws IOException {
 		ArrayList<BufferedImage> testImages = new ArrayList<BufferedImage>();
-		
+
 		ImageLoader textureTrainLoader = new ImageLoader();
 		textureTrainLoader.loadSet("E:\\ro\\texture-train\\");
 		FeatureProcessor trainTextureProcessor = new FeatureProcessor(textureTrainLoader);
@@ -23,13 +23,12 @@ public class Extractor {
 		Output trainTextures = new Output();
 		trainTextures.saveToFile("trainTextures.ser", trainTextureProcessor.getStarImages());
 
-       ImageLoader textureTestLoader = new ImageLoader();
-       textureTestLoader.loadSet("E:\\ro\\texture-test\\");
-       ImageProcessor testTextureProcessor= new ImageProcessor(textureTestLoader);
-       testTextureProcessor.processTexturedImage(1);
-       Output testTextures = new Output();
-       testTextures.saveToFile("testFisrtImage.ser", testTextureProcessor.getFirstImage());
-       
-		
+		ImageLoader textureTestLoader = new ImageLoader();
+		textureTestLoader.loadSet("E:\\ro\\texture-test\\");
+		ImageProcessor testTextureProcessor = new ImageProcessor(textureTestLoader);
+		testTextureProcessor.processTexturedImage(3);
+		Output testTextures = new Output();
+		testTextures.saveToFile("testFisrtImage.ser", testTextureProcessor.getFirstImage());
+
 	}
 }

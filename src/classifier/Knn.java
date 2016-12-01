@@ -21,32 +21,6 @@ import extractor.TextureImage;
 
 public class Knn<T> {
 
-	private class Result {
-		private int originalLabel;
-		private int classifiedLabel;
-
-		public int getOriginalLabel() {
-			return originalLabel;
-		}
-
-		public void setOriginalLabel(int originalLabel) {
-			this.originalLabel = originalLabel;
-		}
-
-		public int getClassifiedLabel() {
-			return classifiedLabel;
-		}
-
-		public void setClassifiedLabel(int classifiedLabel) {
-			this.classifiedLabel = classifiedLabel;
-		}
-
-		public Result(int o, int c) {
-			this.originalLabel = o;
-			this.classifiedLabel = c;
-		}
-	}
-
 	private ArrayList<Extractable> testData;
 	private ArrayList<Extractable> trainData;
 	private ArrayList<Result> finalResults;
@@ -65,13 +39,11 @@ public class Knn<T> {
 		ArrayList<DistanceMetric> tmpEuclid = new ArrayList<>();
 		double eDistance = 0.0;
 		for (int j = 0; j < trainData.size(); j++) {
-			eDistance = Math.pow(
-					Math.pow(testData.get(objectIndex).getFeature1() - trainData.get(j).getFeature1(), 2.0)
-							+ Math.pow(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2(), 2.0)
-							+ Math.pow(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3(), 2.0)
-							+ Math.pow(testData.get(objectIndex).getFeature4() - trainData.get(j).getFeature4(), 2.0)
-							+ Math.pow(testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5(), 2.0),
-					0.5);
+			
+			for(int i=0;i<testData.get(objectIndex).getFeatures().size();i++){
+				eDistance+=Math.pow(testData.get(objectIndex).getFeatures().get(i) - trainData.get(j).getFeatures().get(i),2.0);
+			}
+			eDistance=Math.sqrt(eDistance);
 			tmpEuclid.add(new DistanceMetric(eDistance, trainData.get(j).getImageId()));
 		}
 
@@ -83,20 +55,21 @@ public class Knn<T> {
 		ArrayList<DistanceMetric> tmpMinkovsky = new ArrayList<>();
 		double mDistance = 0.0;
 		for (int j = 0; j < trainData.size(); j++) {
-			mDistance = Math.pow(
-					Math.pow(Math.abs(testData.get(objectIndex).getFeature1() - trainData.get(j).getFeature1()), 3.0)
-							+ Math.pow(
-									Math.abs(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2()),
-									3.0)
-							+ Math.pow(
-									Math.abs(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3()),
-									3.0)
-							+ Math.pow(
-									Math.abs(testData.get(objectIndex).getFeature4() - trainData.get(j).getFeature4()),
-									3.0)
-							+ Math.pow(
-									Math.abs(testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5()),
-									3.0),
+			mDistance = Math.pow(Math.pow(
+					Math.abs(testData.get(objectIndex).getFeatures().get(0) - trainData.get(j).getFeatures().get(0)),
+					3.0)
+					+ Math.pow(Math.abs(
+							testData.get(objectIndex).getFeatures().get(1) - trainData.get(j).getFeatures().get(1)),
+							3.0)
+					+ Math.pow(Math.abs(
+							testData.get(objectIndex).getFeatures().get(2) - trainData.get(j).getFeatures().get(2)),
+							3.0)
+					+ Math.pow(Math.abs(
+							testData.get(objectIndex).getFeatures().get(3) - trainData.get(j).getFeatures().get(3)),
+							3.0)
+					+ Math.pow(Math.abs(
+							testData.get(objectIndex).getFeatures().get(4) - trainData.get(j).getFeatures().get(4)),
+							3.0),
 					0.3333);
 			tmpMinkovsky.add(new DistanceMetric(mDistance, trainData.get(j).getImageId()));
 		}
@@ -112,11 +85,16 @@ public class Knn<T> {
 		for (int j = 0; j < trainData.size(); j++) {
 
 			cDistance = Math.abs(Math.max(
-					testData.get(objectIndex).getFeature1() - trainData.get(objectIndex).getFeature1(),
-					Math.max(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2(),
-							Math.max(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3(), Math.max(
-									testData.get(objectIndex).getFeature4() - trainData.get(j).getFeature4(),
-									testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5())))));
+					testData.get(objectIndex).getFeatures().get(0) - trainData.get(objectIndex).getFeatures().get(0),
+					Math.max(testData.get(objectIndex).getFeatures().get(1) - trainData.get(j).getFeatures().get(1),
+							Math.max(
+									testData.get(objectIndex).getFeatures().get(2)
+											- trainData.get(j).getFeatures().get(2),
+									Math.max(
+											testData.get(objectIndex).getFeatures().get(3)
+													- trainData.get(j).getFeatures().get(3),
+											testData.get(objectIndex).getFeatures().get(4)
+													- trainData.get(j).getFeatures().get(4))))));
 			tmpChebyshev.add(new DistanceMetric(cDistance, trainData.get(j).getImageId()));
 		}
 
@@ -130,11 +108,11 @@ public class Knn<T> {
 		ArrayList<DistanceMetric> tmpTaxi = new ArrayList<>();
 		double tDistance = 0.0;
 		for (int j = 0; j < trainData.size(); j++) {
-			tDistance = Math.abs(testData.get(objectIndex).getFeature1() - trainData.get(j).getFeature1())
-					+ Math.abs(testData.get(objectIndex).getFeature2() - trainData.get(j).getFeature2())
-					+ Math.abs(testData.get(objectIndex).getFeature3() - trainData.get(j).getFeature3())
-					+ Math.abs(testData.get(objectIndex).getFeature4() - trainData.get(j).getFeature4())
-					+ Math.abs(testData.get(objectIndex).getFeature5() - trainData.get(j).getFeature5());
+			tDistance = Math.abs(testData.get(objectIndex).getFeatures().get(0) - trainData.get(j).getFeatures().get(0))
+					+ Math.abs(testData.get(objectIndex).getFeatures().get(1) - trainData.get(j).getFeatures().get(1))
+					+ Math.abs(testData.get(objectIndex).getFeatures().get(2) - trainData.get(j).getFeatures().get(2))
+					+ Math.abs(testData.get(objectIndex).getFeatures().get(3) - trainData.get(j).getFeatures().get(3))
+					+ Math.abs(testData.get(objectIndex).getFeatures().get(4) - trainData.get(j).getFeatures().get(4));
 			tmpTaxi.add(new DistanceMetric(tDistance, trainData.get(j).getImageId()));
 		}
 		findNNearestNeighbours(numberOfNeighbours, tmpTaxi);
@@ -222,7 +200,8 @@ public class Knn<T> {
 	}
 
 	public void showConfusionMatrix() {
-		confusionMatrix = new int[11][11];
+		int size =4;
+		confusionMatrix = new int[size+1][size+1];
 
 		System.out.println("\n ");
 
@@ -231,56 +210,56 @@ public class Knn<T> {
 		}
 
 		System.out.print("\t");
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < size; i++) {
 			System.out.print(Integer.toString(i) + "\t");
 		}
 		System.out.print("Sum");
 		System.out.println(" ");
 
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
 				if (i != j) {
-					confusionMatrix[i][10] += confusionMatrix[i][j];
+					confusionMatrix[i][size] += confusionMatrix[i][j];
 				}
 			}
 		}
 
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
 				if (i != j) {
-					confusionMatrix[10][j] += confusionMatrix[i][j];
+					confusionMatrix[size][j] += confusionMatrix[i][j];
 				}
 			}
 		}
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < size; i++) {
 			System.out.print(i + "\t");
-			for (int j = 0; j < 11; j++) {
+			for (int j = 0; j < size+1; j++) {
 				System.out.print(Integer.toString(confusionMatrix[i][j]) + "\t");
 			}
 			System.out.println(" ");
 		}
 		System.out.print("Sum\t");
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < size; i++) {
 			System.out.print(Integer.toString(confusionMatrix[10][i]) + "\t");
 		}
 		double efficiency = 0.0;
-		for (int j = 0; j < 10; j++) {
+		for (int j = 0; j < size; j++) {
 			efficiency += confusionMatrix[j][j];
 		}
 		System.out.println("\n\n ");
 		DecimalFormat formatter = new DecimalFormat("#0.000");
 		System.out.println("Efficiency: " + formatter.format((efficiency / testData.size() * 100)) + " %");
-       
+
 	}
 
 	public void saveImage(String name) {
 		int[] tmp = new int[512 * 512];
 		for (int i = 0; i < 512 * 512; i++) {
-			tmp[i] = finalResults.get(i).classifiedLabel;
+			tmp[i] = finalResults.get(i).getClassifiedLabel();
 		}
 
 		BufferedImage img = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
-		img.setRGB(0, 0,512,512,tmp,0,512);
+		img.setRGB(0, 0, 512, 512, tmp, 0, 512);
 		File outputfile = new File(name);
 		try {
 			ImageIO.write(img, "png", outputfile);

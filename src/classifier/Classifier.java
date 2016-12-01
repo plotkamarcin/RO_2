@@ -13,11 +13,12 @@ public class Classifier {
 	ArrayList<Image> testData;
 	ArrayList<Image> trainData;
 
+	
 	public static void main(String[] args) {
  		ArrayList<Extractable> trainData = new Loader().loadData("trainTextures.ser");
 		ArrayList<Extractable> testData = new Loader().loadData("testFisrtImage.ser");
 
-
+		
 		NaiveBayesian Bayes = new NaiveBayesian(testData, trainData);
 		Bayes.classifyItems();
 		Bayes.saveImage("testbayes.png");
@@ -26,10 +27,8 @@ public class Classifier {
 		Knn starClassifier = new Knn(testData, trainData);
 		for (int i = 0; i <testData.size(); i++) {
 			starClassifier.calculateEuclideanDistances(i, 5);
-			//starClassifier.calculateMinkovskyDistances(i, 5);
-			//starClassifier.calculateChebyshevDistances(i, 5);
-			//starClassifier.calculateTaxiDistances(i, 5);
 		}
        starClassifier.saveImage("test1.png");
+       starClassifier.showConfusionMatrix();
 	}
 }

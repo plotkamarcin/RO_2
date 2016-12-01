@@ -78,10 +78,7 @@ public class ImageProcessor extends FeatureProcessor {
 
 		 Random rand = new Random();
 		for(TextureImage t : firstImage){
-			t.setFeature1(t.calculateFirstFeature());
-			t.setFeature2(t.calculateSecondFeature());
-			t.setFeature3(t.calculateThirdFeature());
-			t.setFeature4(t.calculateFourthFeature());
+			t.calculateFeatures();
 		}
 	}
 }

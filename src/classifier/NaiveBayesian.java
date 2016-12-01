@@ -10,32 +10,7 @@ import javax.imageio.ImageIO;
 import extractor.Extractable;
 
 public class NaiveBayesian {
-	private class Result {
-		private int originalLabel;
-		private int classifiedLabel;
-
-		public int getOriginalLabel() {
-			return originalLabel;
-		}
-
-		public void setOriginalLabel(int originalLabel) {
-			this.originalLabel = originalLabel;
-		}
-
-		public int getClassifiedLabel() {
-			return classifiedLabel;
-		}
-
-		public void setClassifiedLabel(int classifiedLabel) {
-			this.classifiedLabel = classifiedLabel;
-		}
-
-		public Result(int o, int c) {
-			this.originalLabel = o;
-			this.classifiedLabel = c;
-		}
-	}
-	
+		
 	private class ErrorFunction {
 
 
@@ -99,10 +74,10 @@ public class NaiveBayesian {
 		
 		for(Extractable item:testData){
 			
-			double posterior1=calculateGaussianProbabilityFunction(varianceValues[0][0], meanValues[0][0], item.getFeature1())*calculateGaussianProbabilityFunction(varianceValues[0][1], meanValues[0][1], item.getFeature2())*calculateGaussianProbabilityFunction(varianceValues[0][2], meanValues[0][2], item.getFeature3())*calculateGaussianProbabilityFunction(varianceValues[0][3], meanValues[0][3], item.getFeature4());
-			double posterior2=calculateGaussianProbabilityFunction(varianceValues[1][0], meanValues[1][0], item.getFeature1())*calculateGaussianProbabilityFunction(varianceValues[1][1], meanValues[1][1], item.getFeature2())*calculateGaussianProbabilityFunction(varianceValues[1][2], meanValues[1][2], item.getFeature3())*calculateGaussianProbabilityFunction(varianceValues[1][3], meanValues[1][3], item.getFeature4());
-			double posterior3=calculateGaussianProbabilityFunction(varianceValues[2][0], meanValues[2][0], item.getFeature1())*calculateGaussianProbabilityFunction(varianceValues[2][1], meanValues[2][1], item.getFeature2())*calculateGaussianProbabilityFunction(varianceValues[2][2], meanValues[2][2], item.getFeature3())*calculateGaussianProbabilityFunction(varianceValues[2][3], meanValues[2][3], item.getFeature4());
-			double posterior4=calculateGaussianProbabilityFunction(varianceValues[3][0], meanValues[3][0], item.getFeature1())*calculateGaussianProbabilityFunction(varianceValues[3][1], meanValues[3][1], item.getFeature2())*calculateGaussianProbabilityFunction(varianceValues[3][2], meanValues[3][2], item.getFeature3())*calculateGaussianProbabilityFunction(varianceValues[3][3], meanValues[3][3], item.getFeature4());	
+			double posterior1=calculateGaussianProbabilityFunction(varianceValues[0][0], meanValues[0][0], item.getFeatures().get(0))*calculateGaussianProbabilityFunction(varianceValues[0][1], meanValues[0][1], item.getFeatures().get(1))*calculateGaussianProbabilityFunction(varianceValues[0][2], meanValues[0][2], item.getFeatures().get(2))*calculateGaussianProbabilityFunction(varianceValues[0][3], meanValues[0][3], item.getFeatures().get(3))*calculateGaussianProbabilityFunction(varianceValues[0][4], meanValues[0][4], item.getFeatures().get(4));
+			double posterior2=calculateGaussianProbabilityFunction(varianceValues[1][0], meanValues[1][0], item.getFeatures().get(0))*calculateGaussianProbabilityFunction(varianceValues[1][1], meanValues[1][1], item.getFeatures().get(1))*calculateGaussianProbabilityFunction(varianceValues[1][2], meanValues[1][2], item.getFeatures().get(2))*calculateGaussianProbabilityFunction(varianceValues[1][3], meanValues[1][3], item.getFeatures().get(3))*calculateGaussianProbabilityFunction(varianceValues[1][4], meanValues[1][4], item.getFeatures().get(4));
+			double posterior3=calculateGaussianProbabilityFunction(varianceValues[2][0], meanValues[2][0], item.getFeatures().get(0))*calculateGaussianProbabilityFunction(varianceValues[2][1], meanValues[2][1], item.getFeatures().get(1))*calculateGaussianProbabilityFunction(varianceValues[2][2], meanValues[2][2], item.getFeatures().get(2))*calculateGaussianProbabilityFunction(varianceValues[2][3], meanValues[2][3], item.getFeatures().get(3))*calculateGaussianProbabilityFunction(varianceValues[2][4], meanValues[2][4], item.getFeatures().get(4));
+			double posterior4=calculateGaussianProbabilityFunction(varianceValues[3][0], meanValues[3][0], item.getFeatures().get(0))*calculateGaussianProbabilityFunction(varianceValues[3][1], meanValues[3][1], item.getFeatures().get(1))*calculateGaussianProbabilityFunction(varianceValues[3][2], meanValues[3][2], item.getFeatures().get(2))*calculateGaussianProbabilityFunction(varianceValues[3][3], meanValues[3][3], item.getFeatures().get(3))*calculateGaussianProbabilityFunction(varianceValues[3][4], meanValues[3][4], item.getFeatures().get(4));	
 			double evidence = posterior1+posterior2+posterior3+posterior4;
 			
 			ErrorFunction erf = new ErrorFunction();
@@ -138,7 +113,7 @@ public class NaiveBayesian {
 	public void saveImage(String name) {
 		int[] tmp = new int[512 * 512];
 		for (int i = 0; i < 512 * 512; i++) {
-			tmp[i] = finalResults.get(i).classifiedLabel;
+			tmp[i] = finalResults.get(i).getClassifiedLabel();
 		}
 
 		BufferedImage img = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
@@ -153,32 +128,29 @@ public class NaiveBayesian {
 
 	}
 	private double [][] calculateMeanValueForClasses(ArrayList<Extractable> list){
-        double[][] Mean = new double[4][4];
+		int size = trainData.get(0).getFeatures().size();
+        double[][] Mean = new double[4][size];
         for(int i=0;i<list.size();i++){
         	switch (list.get(i).getImageId()){
         	case 0:
-        		Mean[0][0]+=list.get(i).getFeature1();
-        		Mean[0][1]+=list.get(i).getFeature2();
-        		Mean[0][2]+=list.get(i).getFeature3();
-        		Mean[0][3]+=list.get(i).getFeature4();
+        		for(int j=0;j<size;j++){
+        			Mean[0][j]+=list.get(i).getFeatures().get(j);
+        		}
         		break;
         	case 63:
-        		Mean[1][0]+=list.get(i).getFeature1();
-        		Mean[1][1]+=list.get(i).getFeature2();
-        		Mean[1][2]+=list.get(i).getFeature3();
-        		Mean[1][3]+=list.get(i).getFeature4();
+        		for(int j=0;j<size;j++){
+        			Mean[1][j]+=list.get(i).getFeatures().get(j);
+        		}
         		break;
         	case 127:
-        		Mean[2][0]+=list.get(i).getFeature1();
-        		Mean[2][1]+=list.get(i).getFeature2();
-        		Mean[2][2]+=list.get(i).getFeature3();
-        		Mean[2][3]+=list.get(i).getFeature4();
+        		for(int j=0;j<size;j++){
+        			Mean[2][j]+=list.get(i).getFeatures().get(j);
+        		}
         		break;
         	case 191:
-        		Mean[3][0]+=list.get(i).getFeature1();
-        		Mean[3][1]+=list.get(i).getFeature2();
-        		Mean[3][2]+=list.get(i).getFeature3();
-        		Mean[3][3]+=list.get(i).getFeature4();
+        		for(int j=0;j<size;j++){
+        			Mean[3][j]+=list.get(i).getFeatures().get(j);
+        		}
         		break;
         	}
         }
@@ -190,32 +162,29 @@ public class NaiveBayesian {
         return Mean;
 	}
    private double[][] calculateVarianceForClasses(double[][] averages, ArrayList<Extractable> list){
-	   double[][] Variances = new double[4][4];
+	   int size = trainData.get(0).getFeatures().size();
+	   double[][] Variances = new double[4][size];
 	   for(int i=0;i<list.size();i++){
        	switch (list.get(i).getImageId()){
        	case 0:
-       		Variances[0][0]+=Math.pow(list.get(i).getFeature1()-averages[0][0],2);
-       		Variances[0][1]+=Math.pow(list.get(i).getFeature2()-averages[0][1],2);
-       		Variances[0][2]+=Math.pow(list.get(i).getFeature3()-averages[0][2],2);
-       		Variances[0][3]+=Math.pow(list.get(i).getFeature4()-averages[0][3],2);
+       		for(int j=0;j<size;j++){
+    			Variances[0][j]+=Math.pow(list.get(i).getFeatures().get(j)-averages[0][j],2);
+    		}
        		break;
        	case 63:
-       		Variances[1][0]+=Math.pow(list.get(i).getFeature1()-averages[1][0],2);
-       		Variances[1][1]+=Math.pow(list.get(i).getFeature2()-averages[1][1],2);
-       		Variances[1][2]+=Math.pow(list.get(i).getFeature3()-averages[1][2],2);
-       		Variances[1][3]+=Math.pow(list.get(i).getFeature4()-averages[1][2],2);
+       		for(int j=0;j<size;j++){
+    			Variances[1][j]+=Math.pow(list.get(i).getFeatures().get(j)-averages[0][j],2);
+    		}
        		break;
        	case 127:
-       		Variances[2][0]+=Math.pow(list.get(i).getFeature1()-averages[2][0],2);
-       		Variances[2][1]+=Math.pow(list.get(i).getFeature2()-averages[2][1],2);
-       		Variances[2][2]+=Math.pow(list.get(i).getFeature3()-averages[2][2],2);
-       		Variances[2][3]+=Math.pow(list.get(i).getFeature4()-averages[2][3],2);
+       		for(int j=0;j<size;j++){
+    			Variances[2][j]+=Math.pow(list.get(i).getFeatures().get(j)-averages[0][j],2);
+    		}
        		break;
        	case 191:
-       		Variances[3][0]+=Math.pow(list.get(i).getFeature1()-averages[3][0],2);
-       		Variances[3][1]+=Math.pow(list.get(i).getFeature2()-averages[3][1],2);
-       		Variances[3][2]+=Math.pow(list.get(i).getFeature3()-averages[3][2],2);
-       		Variances[3][3]+=Math.pow(list.get(i).getFeature4()-averages[3][3],2);
+       		for(int j=0;j<size;j++){
+    			Variances[3][j]+=Math.pow(list.get(i).getFeatures().get(j)-averages[0][j],2);
+    		}
        		break;
        	}
        }

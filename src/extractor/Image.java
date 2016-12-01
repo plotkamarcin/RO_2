@@ -3,6 +3,7 @@ package extractor;
 import java.awt.FlowLayout;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.ImageIcon;
@@ -14,14 +15,9 @@ public class Image implements Serializable,Extractable {
 	private static final long serialVersionUID = 4623746839237756244L;
 	
 private int imageId;
-private double feature1;
-private double feature2;
-private double feature3;
-private double feature4;
-private double feature5;
-
 
 private transient int[] imageTable;
+protected ArrayList<Double> FeatureVector;
 
 public int[] getImageTable() {
 	return imageTable;
@@ -38,46 +34,7 @@ public int getImageId() {
 public void setImageId(int imageId) {
 	this.imageId = imageId;
 }
-@Override
-public double getFeature1() {
-	return feature1;
-}
 
-public void setFeature1(double feature1) {
-	this.feature1 = feature1;
-}
-@Override
-public double getFeature2() {
-	return feature2;
-}
-
-public void setFeature2(double feature2) {
-	this.feature2 = feature2;
-}
-@Override
-public double getFeature3() {
-	return feature3;
-}
-
-public void setFeature3(double feature3) {
-	this.feature3 = feature3;
-}
-@Override
-public double getFeature4() {
-	return feature4;
-}
-
-public void setFeature4(double feature4) {
-	this.feature4 = feature4;
-}
-@Override
-public double getFeature5() {
-	return feature5;
-}
-
-public void setFeature5(double feature5) {
-	this.feature5 = feature5;
-}
 Image(int[] image, int size, int label){
 	imageTable= new int[size*size];
 	imageTable=image;
@@ -221,5 +178,17 @@ protected double normalize(double value){
 }
 protected double normalize(double value, double min, double max){
 	return (value - min)/(max-min);
+}
+
+@Override
+public ArrayList<Double> getFeatures() {
+	return FeatureVector;
+}
+public void calculateFeatures(){
+	FeatureVector = new ArrayList<>();
+	FeatureVector.add(calculateFirstFeature());
+	FeatureVector.add(calculateSecondFeature());
+	FeatureVector.add(calculateThirdFeature());
+	FeatureVector.add(calculateFourthFeature());
 }
 }
