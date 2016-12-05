@@ -57,13 +57,13 @@ public class FeatureProcessor {
 				tmp[i] = pixels[i] & 0xff;
 			}
 			if (j < 814) {
-				starImages.add(new TextureImage(tmp, 64, 0));
-			} else if (j >= 814 && j < 1732) {
-				starImages.add(new TextureImage(tmp, 64, 63));
-			} else if (j >= 1731 && j < 2589) {
-				starImages.add(new TextureImage(tmp, 64, 127));
+				starImages.add(new TextureImage(tmp, 64, 32));
+			} else if (j >= 814 && j < 1730) {
+				starImages.add(new TextureImage(tmp, 64, 96));
+			} else if (j >= 1731 && j < 2588) {
+				starImages.add(new TextureImage(tmp, 64, 160));
 			} else {
-				starImages.add(new TextureImage(tmp, 64, 191));
+				starImages.add(new TextureImage(tmp, 64, 224));
 			}
 			index++;
 		}

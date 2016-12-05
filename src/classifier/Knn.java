@@ -203,10 +203,40 @@ public class Knn<T> {
 		int size =4;
 		confusionMatrix = new int[size+1][size+1];
 
-		System.out.println("\n ");
+		System.out.println("KNN MATRIX\n ");
 
 		for (Result r : finalResults) {
-			Integer.toString(confusionMatrix[r.getOriginalLabel()][r.getClassifiedLabel()]++);
+			int original=0;
+			int classified=0;
+			switch(r.getOriginalLabel()){
+			case 32:
+				original=0;
+				break;
+			case 96:
+				original=1;
+				break;
+			case 160:
+				original=2;
+				break;
+			case 224:
+				original=3;
+				break;
+			}
+			switch(r.getClassifiedLabel()){
+			case 32:
+				classified=0;
+				break;
+			case 96:
+				classified=1;
+				break;
+			case 160:
+				classified=2;
+				break;
+			case 224:
+				classified=3;
+				break;
+			}
+			Integer.toString(confusionMatrix[original][classified]++);
 		}
 
 		System.out.print("\t");
@@ -240,7 +270,7 @@ public class Knn<T> {
 		}
 		System.out.print("Sum\t");
 		for (int i = 0; i < size; i++) {
-			System.out.print(Integer.toString(confusionMatrix[10][i]) + "\t");
+			System.out.print(Integer.toString(confusionMatrix[size][i]) + "\t");
 		}
 		double efficiency = 0.0;
 		for (int j = 0; j < size; j++) {

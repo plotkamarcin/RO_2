@@ -3,6 +3,7 @@ package classifier;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -96,16 +97,16 @@ public class NaiveBayesian {
 			 }
 			 switch (maxIndex){
 			 case 0:
-				 finalResults.add(new Result(item.getImageId(), 0));
+				 finalResults.add(new Result(item.getImageId(), 32));
 				 break;
 			 case 1:
-				 finalResults.add(new Result(item.getImageId(), 63));
+				 finalResults.add(new Result(item.getImageId(), 96));
 				 break;
 			 case 2:
-				 finalResults.add(new Result(item.getImageId(), 127));
+				 finalResults.add(new Result(item.getImageId(), 160));
 				 break;
 			 case 3:
-				 finalResults.add(new Result(item.getImageId(), 195));
+				 finalResults.add(new Result(item.getImageId(), 224));
 				 break;
 			 }
 		}
@@ -132,22 +133,22 @@ public class NaiveBayesian {
         double[][] Mean = new double[4][size];
         for(int i=0;i<list.size();i++){
         	switch (list.get(i).getImageId()){
-        	case 0:
+        	case 32:
         		for(int j=0;j<size;j++){
         			Mean[0][j]+=list.get(i).getFeatures().get(j);
         		}
         		break;
-        	case 63:
+        	case 96:
         		for(int j=0;j<size;j++){
         			Mean[1][j]+=list.get(i).getFeatures().get(j);
         		}
         		break;
-        	case 127:
+        	case 160:
         		for(int j=0;j<size;j++){
         			Mean[2][j]+=list.get(i).getFeatures().get(j);
         		}
         		break;
-        	case 191:
+        	case 224:
         		for(int j=0;j<size;j++){
         			Mean[3][j]+=list.get(i).getFeatures().get(j);
         		}
@@ -166,22 +167,22 @@ public class NaiveBayesian {
 	   double[][] Variances = new double[4][size];
 	   for(int i=0;i<list.size();i++){
        	switch (list.get(i).getImageId()){
-       	case 0:
+       	case 32:
        		for(int j=0;j<size;j++){
     			Variances[0][j]+=Math.pow(list.get(i).getFeatures().get(j)-averages[0][j],2);
     		}
        		break;
-       	case 63:
+       	case 96:
        		for(int j=0;j<size;j++){
     			Variances[1][j]+=Math.pow(list.get(i).getFeatures().get(j)-averages[0][j],2);
     		}
        		break;
-       	case 127:
+       	case 160:
        		for(int j=0;j<size;j++){
     			Variances[2][j]+=Math.pow(list.get(i).getFeatures().get(j)-averages[0][j],2);
     		}
        		break;
-       	case 191:
+       	case 224:
        		for(int j=0;j<size;j++){
     			Variances[3][j]+=Math.pow(list.get(i).getFeatures().get(j)-averages[0][j],2);
     		}
@@ -198,5 +199,87 @@ public class NaiveBayesian {
    private double calculateGaussianProbabilityFunction(double ro, double mi, double value){
   return (1/Math.pow((2*Math.PI*ro),0.5))*(Math.pow(Math.E, -Math.pow(value-mi, 2)/(2*ro)));
    }
+   public void showConfusionMatrix() {
+		int size =4;
+		confusionMatrix = new int[size+1][size+1];
+
+		System.out.println("BAYES MATRIX\n ");
+
+		for (Result r : finalResults) {
+			int original=0;
+			int classified=0;
+			switch(r.getOriginalLabel()){
+			case 32:
+				original=0;
+				break;
+			case 96:
+				original=1;
+				break;
+			case 160:
+				original=2;
+				break;
+			case 224:
+				original=3;
+				break;
+			}
+			switch(r.getClassifiedLabel()){
+			case 32:
+				classified=0;
+				break;
+			case 96:
+				classified=1;
+				break;
+			case 160:
+				classified=2;
+				break;
+			case 224:
+				classified=3;
+				break;
+			}
+			Integer.toString(confusionMatrix[original][classified]++);
+		}
+
+		System.out.print("\t");
+		for (int i = 0; i < size; i++) {
+			System.out.print(Integer.toString(i) + "\t");
+		}
+		System.out.print("Sum");
+		System.out.println(" ");
+
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				if (i != j) {
+					confusionMatrix[i][size] += confusionMatrix[i][j];
+				}
+			}
+		}
+
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				if (i != j) {
+					confusionMatrix[size][j] += confusionMatrix[i][j];
+				}
+			}
+		}
+		for (int i = 0; i < size; i++) {
+			System.out.print(i + "\t");
+			for (int j = 0; j < size+1; j++) {
+				System.out.print(Integer.toString(confusionMatrix[i][j]) + "\t");
+			}
+			System.out.println(" ");
+		}
+		System.out.print("Sum\t");
+		for (int i = 0; i < size; i++) {
+			System.out.print(Integer.toString(confusionMatrix[size][i]) + "\t");
+		}
+		double efficiency = 0.0;
+		for (int j = 0; j < size; j++) {
+			efficiency += confusionMatrix[j][j];
+		}
+		System.out.println("\n\n ");
+		DecimalFormat formatter = new DecimalFormat("#0.000");
+		System.out.println("Efficiency: " + formatter.format((efficiency / testData.size() * 100)) + " %");
+
+	}
 	
 }

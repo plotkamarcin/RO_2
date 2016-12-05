@@ -26,7 +26,7 @@ public class Extractor {
 		ImageLoader textureTestLoader = new ImageLoader();
 		textureTestLoader.loadSet("E:\\ro\\texture-test\\");
 		ImageProcessor testTextureProcessor = new ImageProcessor(textureTestLoader);
-		testTextureProcessor.processTexturedImage(3);
+		testTextureProcessor.processTexturedImage(4);
 		Output testTextures = new Output();
 		testTextures.saveToFile("testFisrtImage.ser", testTextureProcessor.getFirstImage());
 

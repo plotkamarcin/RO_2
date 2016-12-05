@@ -3,6 +3,7 @@ package extractor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.DoubleStream;
 
 import javax.swing.JTree;
 
@@ -70,11 +71,14 @@ public class TextureImage extends Image implements Serializable, Extractable {
 			tmp[i] = getImageTable()[i];
 		}
 		double[] result = calculateFFT(tmp);
-		double avgSpectrum=0.0;
+		double[] spectrums = new double [getImageTable().length*2];
 		for(int i=0;i<result.length-1;i+=2){
-			avgSpectrum+=Math.pow(Math.pow(result[i], 2)+Math.pow(result[i+1], 2), 0.5);
+			spectrums[i]+=Math.pow(Math.pow(result[i], 2)+Math.pow(result[i+1], 2), 0.5);
 		}
-		return avgSpectrum/(result.length/2);
+		double avgSpectrum = DoubleStream.of(spectrums).average().getAsDouble();
+		double maxSpectrum = DoubleStream.of(spectrums).max().getAsDouble();
+		double minSpectrum = DoubleStream.of(spectrums).min().getAsDouble();
+		return avgSpectrum;
 	}
 	private double calculateFFT2() {
 		double[] tmp = new double[getImageTable().length];
@@ -82,11 +86,12 @@ public class TextureImage extends Image implements Serializable, Extractable {
 			tmp[i] = getImageTable()[i];
 		}
 		double[] result = calculateFFT(tmp);
-		double avgPhase=0.0;
+		double[] phases = new double [getImageTable().length*2];
 		for(int i=0;i<result.length-1;i+=2){
-			avgPhase+=Math.atan2(result[i+1], result[i]);
+			phases[i]+=Math.atan2(result[i+1], result[i]);
 		}
-		return avgPhase/(result.length/2);
+		double avgPhase = DoubleStream.of(phases).average().getAsDouble();		
+		return avgPhase;
 	}
 
 	private double calculateFFT3() {
@@ -95,13 +100,13 @@ public class TextureImage extends Image implements Serializable, Extractable {
 			tmp[i] = getImageTable()[i];
 		}
 		double[] result = calculateFFT(tmp);
-		double QuartileAvg=0.0;
-        int Quartile=((int)Math.sqrt(getImageTable().length))/4;
-        for(int i=0;i<Quartile*2;i+=2){
-        		QuartileAvg+=Math.pow(Math.pow(result[i], 2)+Math.pow(result[i+1], 2), 0.5);
-        }
-        QuartileAvg/=Quartile;
-        return QuartileAvg;
+		double[] spectrums = new double [getImageTable().length*2];
+		int Quartile=((int)Math.sqrt(getImageTable().length))/4;
+		for(int i=0;i<Quartile*2;i+=2){
+			spectrums[i]+=Math.pow(Math.pow(result[i], 2)+Math.pow(result[i+1], 2), 0.5);
+		}
+		double avgSpectrum = DoubleStream.of(spectrums).average().getAsDouble();
+		return avgSpectrum;
 	}
 
 	private double calculateFFT4() {
@@ -110,13 +115,14 @@ public class TextureImage extends Image implements Serializable, Extractable {
 			tmp[i] = getImageTable()[i];
 		}
 		double[] result = calculateFFT(tmp);
-		double QuartileAvg=0.0;
-        int Quartile=((int)Math.sqrt(getImageTable().length))/4;
+		double[] spectrums = new double [getImageTable().length*2];
+		int Quartile=((int)Math.sqrt(getImageTable().length))/4;
+
         for(int i=Quartile*2;i<Quartile*4;i+=2){
-        		QuartileAvg+=Math.pow(Math.pow(result[i], 2)+Math.pow(result[i+1], 2), 0.5);
+        	spectrums[i]+=Math.pow(Math.pow(result[i], 2)+Math.pow(result[i+1], 2), 0.5);
         }
-        QuartileAvg/=Quartile;
-        return QuartileAvg;
+        double avgSpectrum = DoubleStream.of(spectrums).average().getAsDouble();
+		return avgSpectrum;
 	}
 
 	private double calculateFFT5() {
@@ -125,13 +131,13 @@ public class TextureImage extends Image implements Serializable, Extractable {
 			tmp[i] = getImageTable()[i];
 		}
 		double[] result = calculateFFT(tmp);
-		double QuartileAvg=0.0;
-        int Quartile=((int)Math.sqrt(getImageTable().length))/4;
+		double[] spectrums = new double [getImageTable().length*2];
+		int Quartile=((int)Math.sqrt(getImageTable().length))/4;
         for(int i=Quartile*3;i<Quartile*6;i+=2){
-        		QuartileAvg+=Math.pow(Math.pow(result[i], 2)+Math.pow(result[i+1], 2), 0.5);
+        	spectrums[i]+=Math.pow(Math.pow(result[i], 2)+Math.pow(result[i+1], 2), 0.5);
         }
-        QuartileAvg/=Quartile;
-        return QuartileAvg;
+        double avgSpectrum = DoubleStream.of(spectrums).average().getAsDouble();
+		return avgSpectrum;
 	}
 	private double calculateFFT6() {
 		double[] tmp = new double[getImageTable().length];
@@ -139,28 +145,30 @@ public class TextureImage extends Image implements Serializable, Extractable {
 			tmp[i] = getImageTable()[i];
 		}
 		double[] result = calculateFFT(tmp);
-		double QuartileAvg=0.0;
-        int Quartile=((int)Math.sqrt(getImageTable().length))/4;
+		double[] spectrums = new double [getImageTable().length*2];
+		int Quartile=((int)Math.sqrt(getImageTable().length))/4;
         for(int i=Quartile*4;i<Quartile*8;i+=2){
-        		QuartileAvg+=Math.pow(Math.pow(result[i], 2)+Math.pow(result[i+1], 2), 0.5);
+        	spectrums[i]+=Math.pow(Math.pow(result[i], 2)+Math.pow(result[i+1], 2), 0.5);
         }
-        QuartileAvg/=Quartile;
-        return QuartileAvg;
+        double avgSpectrum = DoubleStream.of(spectrums).average().getAsDouble();
+		return avgSpectrum;
 	}
+
 	@Override
 	public void calculateFeatures() {
 		FeatureVector = new ArrayList<>();
-		FeatureVector.add(calculateFirstFeature());
-		FeatureVector.add(calculateSecondFeature());
-		FeatureVector.add(calculateThirdFeature());
-		FeatureVector.add(calculateFourthFeature());
-		FeatureVector.add(calculateFifthFeature());
-		//FeatureVector.add(calculateFFT1());
-		//FeatureVector.add(calculateFFT2());
-		//FeatureVector.add(calculateFFT3());
-		//FeatureVector.add(calculateFFT4());
-		//FeatureVector.add(calculateFFT5());
-		//FeatureVector.add(calculateFFT6());
+		//FeatureVector.add(calculateFirstFeature());
+		//FeatureVector.add(calculateSecondFeature());
+		//FeatureVector.add(calculateThirdFeature());
+		//FeatureVector.add(calculateFourthFeature());
+		//FeatureVector.add(calculateFifthFeature());
+		FeatureVector.add(calculateFFT1());
+		FeatureVector.add(calculateFFT2());
+		FeatureVector.add(calculateFFT3());
+		FeatureVector.add(calculateFFT4());
+		FeatureVector.add(calculateFFT5());
+		FeatureVector.add(calculateFFT6());
+
 		
 	}
 
