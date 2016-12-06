@@ -22,7 +22,7 @@ public class Classifier {
 		NaiveBayesian Bayes = new NaiveBayesian(testData, trainData);
 		Bayes.classifyItems();
 		Bayes.saveImage("testbayes.png");
-		
+		Bayes.showConfusionMatrix();
 		
 		Knn starClassifier = new Knn(testData, trainData);
 		for (int i = 0; i <testData.size(); i++) {

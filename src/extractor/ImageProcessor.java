@@ -56,7 +56,7 @@ public class ImageProcessor extends FeatureProcessor {
             			buffer[j*factor+k]=0;
             		}
             		else{
-            		buffer[j*factor+k]=image1[i+(((k-1)*512))-(k-1)];
+            		buffer[j*factor+k]=image3[i+(((k-1)*512))-(k-1)];
             		}
             	}
             }

@@ -83,10 +83,10 @@ public class NaiveBayesian {
 			
 			ErrorFunction erf = new ErrorFunction();
 			 double [] probabilities = new double[4];
-			 probabilities[0]=erf.erf((probability*posterior1)/evidence);
-			 probabilities[1]=erf.erf((probability*posterior2)/evidence);
-			 probabilities[2]=erf.erf((probability*posterior3)/evidence);
-			 probabilities[3]=erf.erf((probability*posterior4)/evidence);
+			 probabilities[0]=0.5*(1+erf.erf((probability*posterior1)/evidence));
+			 probabilities[1]=0.5*(1+erf.erf((probability*posterior2)/evidence));
+			 probabilities[2]=0.5*(1+erf.erf((probability*posterior3)/evidence));
+			 probabilities[3]=0.5*(1+erf.erf((probability*posterior4)/evidence));
 			
 			 int maxIndex = 0;
 			 for (int i = 1; i < probabilities.length; i++){

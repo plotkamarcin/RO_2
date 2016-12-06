@@ -41,7 +41,7 @@ public class TextureImage extends Image implements Serializable, Extractable {
 	for (int i=0;i<histogram.length;i++){
 		avg+=i*histogram[i];
 	}
-		return (avg/getImageTable().length)/256;
+		return DoubleStream.of(tmp).average().getAsDouble();
 
 	}
 
@@ -157,17 +157,17 @@ public class TextureImage extends Image implements Serializable, Extractable {
 	@Override
 	public void calculateFeatures() {
 		FeatureVector = new ArrayList<>();
-		//FeatureVector.add(calculateFirstFeature());
-		//FeatureVector.add(calculateSecondFeature());
-		//FeatureVector.add(calculateThirdFeature());
-		//FeatureVector.add(calculateFourthFeature());
-		//FeatureVector.add(calculateFifthFeature());
-		FeatureVector.add(calculateFFT1());
-		FeatureVector.add(calculateFFT2());
-		FeatureVector.add(calculateFFT3());
-		FeatureVector.add(calculateFFT4());
-		FeatureVector.add(calculateFFT5());
-		FeatureVector.add(calculateFFT6());
+		FeatureVector.add(calculateFirstFeature());
+		FeatureVector.add(calculateSecondFeature());
+		FeatureVector.add(calculateThirdFeature());
+		FeatureVector.add(calculateFourthFeature());
+		FeatureVector.add(calculateFifthFeature());
+		//FeatureVector.add(calculateFFT1());
+		//FeatureVector.add(calculateFFT2());
+		//FeatureVector.add(calculateFFT3());
+		//FeatureVector.add(calculateFFT4());
+		//FeatureVector.add(calculateFFT5());
+		//FeatureVector.add(calculateFFT6());
 
 		
 	}
